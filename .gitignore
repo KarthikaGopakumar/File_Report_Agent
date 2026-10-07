@@ -1,0 +1,6 @@
+.env
+.venv/
+__pycache__/
+uploaded.xlsx
+report.docx
+report_out.docx
