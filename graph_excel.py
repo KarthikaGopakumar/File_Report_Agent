@@ -16,6 +16,7 @@ class State(TypedDict):
     row_count: int
     analysis: str
     missing: list
+    error: str
  
 
 def read_excel(state: State):
@@ -36,10 +37,10 @@ def read_excel(state: State):
     return {"summary": summary, "row_count": len(df),"missing":missing}
 
 def bad_columns(state: State):
-    return{"report": f"Missing Columns:{state["missing"]}"}
+    return{"error": f"These required columns are missing:{state['missing']}"}
 
 def empty_file(state: State):
-    return {"report": "file is empty"}
+    return {"error": "file is empty, please upload a file with data rows "}
 
 def check_rows(state: State):
     if state["row_count"]==0:

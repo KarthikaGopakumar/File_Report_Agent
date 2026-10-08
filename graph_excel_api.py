@@ -2,6 +2,7 @@ from fastapi.responses import FileResponse
 from fastapi import FastAPI, UploadFile, File
 from graph_excel import graph
 from docx import Document
+from fastapi import HTTPException
 
 app = FastAPI()
 
@@ -17,5 +18,7 @@ async def report(file: UploadFile = File(...)):
     with open("uploaded.xlsx", "wb") as f:
         f.write(contents)
     result=graph.invoke({"file_path": "uploaded.xlsx"}) 
+    if result.get("error"):
+        raise HTTPException(status_code=400, detail=result["error"])
     make_docx(result["report"])   
     return FileResponse("report.docx", filename="report.docx")
