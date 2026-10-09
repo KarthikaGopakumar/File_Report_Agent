@@ -14,6 +14,8 @@ def make_docx(report_text):
 
 @app.post("/report")
 async def report(file: UploadFile = File(...)):
+    if not file.filename.endswith("xlsx"):
+         raise HTTPException(status_code=400, detail="Please upload an .xlsx file.")
     contents = await file.read()
     with open("uploaded.xlsx", "wb") as f:
         f.write(contents)

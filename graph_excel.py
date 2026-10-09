@@ -53,6 +53,9 @@ def check_rows(state: State):
 def analyze(state: State):
     
     df = pd.read_excel(state["file_path"])
+    df["quantity"]=pd.to_numeric(df["quantity"], errors="coerce")
+    df["price"]=pd.to_numeric(df["price"], errors="coerce")
+    skipped = df[["quantity", "price"]].isna().any(axis=1).sum()
     df["revenue"] = df["quantity"] * df["price"]
     by_product = df.groupby("product")["revenue"].sum().sort_values(ascending=False)
     by_region = df.groupby("region")["revenue"].sum().sort_values(ascending=False)  
@@ -63,12 +66,13 @@ def analyze(state: State):
     analysis = (
         f"Revenue by product:\n{by_product.to_string()}\n\n"
         f"Revenue by region:\n{by_region.to_string()}"
+        f"\n\nRows skipped (missing or invalid quantity/price): {skipped}"
     )
     return {"analysis": analysis}  
 
 
 def write_report(state: State):
-    prompt = "You are a data analyst. Write a short report (3 bullet points, simple English) based on this data. Do not add currency symbols or facts that are not in the data.\n\n" + state["analysis"] +"\n\n" + state["summary"]
+    prompt = "You are a data analyst. Write a short report (3 bullet points, simple English) based on this data. Do not add currency symbols or facts that are not in the data. About the missed rows, it needs to be in separate line other then in the 3.\n\n" + state["analysis"] +"\n\n" + state["summary"]
     # print(prompt)
     result = llm.invoke(prompt)
     return {"report": result.content}
