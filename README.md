@@ -29,3 +29,18 @@ uvicorn graph_excel_api:app --reload
 ```
 
 4) Open http://127.0.0.1:8000/docs, try POST /report, and upload an Excel file
+
+
+## Demo 
+
+1) Uploading an Excel file in the API docs, in the file required field.
+
+![Uploading an Excel file](Images/upload.png)
+
+2) Getting the output as a download option. 
+
+![Output](Images/report.png)
+
+3) Getting an error message when uploading an unsupported file.
+
+![Error](Images/error.png)
